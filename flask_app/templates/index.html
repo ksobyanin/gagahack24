@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autodock</title>
+</head>
+<body>
+    <h1>Automatick authomobile document detector</h1>
+    <p>simple frontend</p>
+
+    <input type="file" id="imageInput" accept="image/*">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sendImageButton = document.createElement('button');
+            sendImageButton.textContent = 'Send Image';
+            sendImageButton.addEventListener('click', sendImage);
+            document.body.appendChild(sendImageButton);
+        });
+
+        function sendImage() {
+            const input = document.getElementById('imageInput');
+            const file = input.files[0];
+
+            if (file) {
+                const url = window.location.href + '/detect';
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64Image = e.target.result;
+                    const payload = { image : base64Image };
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('Response JSON:\n' + JSON.stringify(data));
+                    })
+                    .catch(error => {
+                        alert('Error occurred while sending the image.');
+                        console.error('Error:', error);
+                    });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please select an image file.');
+            }
+        }
+    </script>
+</body>
+</html>
