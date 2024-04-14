@@ -6,6 +6,7 @@ from io import BytesIO
 import os
 import base64
 from ocr import OCR
+import numpy as np
 
 
 def inint_model():
@@ -31,11 +32,12 @@ def process_image():
     # Open the image from the decoded data
 
     img = Image.open(BytesIO(image_data))
-  
+    img.save('image.jpg')
 
-    print('image, loaded', img.size, 'starting inference')
-  
-    result = json.loads(model.predict_and_return_json('7.jpg'))
+
+    # print('image, loaded', img.size, 'starting inference','array shape', array.shape)
+    
+    result = json.loads(model.predict_and_return_json('image.jpg'))
     print(result)
     return jsonify({
         'confidence': result["confidence"],
